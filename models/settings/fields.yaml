@@ -1,0 +1,9 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+
+    token:
+        label  : martin.monitorclient::lang.settings.token
+        comment: martin.monitorclient::lang.settings.token_comments
