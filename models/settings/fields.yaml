@@ -4,6 +4,34 @@
 
 fields:
 
+    url:
+        label: Endpoint URL
+        type : partial
+        path : $/martin/monitorclient/models/settings/_url.htm
+
     token:
         label  : martin.monitorclient::lang.settings.token
         comment: martin.monitorclient::lang.settings.token_comments
+        span   : left
+
+    # generate:
+    #     type : partial
+    #     path : $/martin/monitorclient/models/settings/_refresh_token.htm
+    #     span : right
+
+    enable_encryption:
+        label  : Enable endpoint encryption
+        type   : switch
+        on : On
+        off: Off
+
+    app_key:
+        label  : Encryption Key
+        comment: Use this key to decrypt endpoint response
+        type   : partial
+        path   : $/martin/monitorclient/models/settings/_app_key.htm
+        span   : left
+        trigger:
+            action   : show
+            field    : enable_encryption
+            condition: checked
