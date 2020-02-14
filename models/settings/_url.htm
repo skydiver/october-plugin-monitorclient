@@ -1,0 +1,12 @@
+<?php
+
+    $url = vsprintf('%s/%s', [
+        Backend::url('martin/monitorclient/monitor/status/'),
+        $model->token
+    ]);
+
+?>
+
+<div class="flash-message static info">
+    <a href="<?php echo $url ?>" target="_blank" style="color: white"><?php echo $url ?></a>
+</div>

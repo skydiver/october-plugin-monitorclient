@@ -1,25 +1,52 @@
 <?php
 
-    namespace Martin\MonitorClient\Controllers;
+namespace Martin\MonitorClient\Controllers;
 
-    use App, Response;
-    use Martin\MonitorClient\Classes\Updates;
-    use Martin\MonitorClient\Models\Settings;
+use App, Config, Response;
+use Martin\MonitorClient\Classes\Logins;
+use Martin\MonitorClient\Classes\Logs;
+use Martin\MonitorClient\Classes\October;
+use Martin\MonitorClient\Classes\PHP;
+use Martin\MonitorClient\Classes\Server;
+use Martin\MonitorClient\Classes\Updates;
 
-    class Monitor extends \Backend\Classes\Controller {
+use Martin\MonitorClient\Models\Settings;
+use Illuminate\Encryption\Encrypter;
 
-        public $publicActions = ['updates'];
+class Monitor extends \Backend\Classes\Controller {
 
-        public function updates($token=null) {
+    public $publicActions = ['status'];
 
-            if($token == '' OR $token != Settings::get('token')) {
-                App::abort(404, '404 Not Found');
-            }
+    public function status($token=null) {
 
-            $updates = Updates::available();
-            return \Response::json($updates);
-
+        if ($token === '' OR $token !== Settings::get('token')) {
+            App::abort(404);
         }
+
+        // get information
+        $updates = Updates::available();
+        $server  = Server::info();
+        $php     = PHP::info();
+        $october = October::info();
+        $logins  = Logins::info();
+        $logs    = Logs::info();
+
+        $data = compact('updates', 'server', 'php', 'october', 'logins', 'logs');
+
+        if (!Settings::get('enable_encryption')) {
+            return Response::json($data);
+        }
+
+        // return encrypted data
+        $cipher = Config::get('app.cipher');
+        $key = \Str::replaceFirst('base64:', '', Config::get('app.key'));
+        $key = base64_decode($key);
+        $newEncrypter = new Encrypter($key, $cipher);
+        $data = $newEncrypter->encrypt($data);
+        return Response::json($data);
+
     }
+
+}
 
 ?>
