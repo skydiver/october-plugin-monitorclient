@@ -3,6 +3,8 @@
 namespace Martin\MonitorClient\Controllers;
 
 use App, Config, Response;
+use Martin\MonitorClient\Classes\Logins;
+use Martin\MonitorClient\Classes\Logs;
 use Martin\MonitorClient\Classes\October;
 use Martin\MonitorClient\Classes\PHP;
 use Martin\MonitorClient\Classes\Server;
@@ -22,15 +24,19 @@ class Monitor extends \Backend\Classes\Controller {
         }
 
         $updates = Updates::available();
-        $server = Server::info();
-        $php = PHP::info();
+        $server  = Server::info();
+        $php     = PHP::info();
         $october = October::info();
+        $logins  = Logins::info();
+        $logs    = Logs::info();
 
         $data = array_merge([],
             ['updates' => $updates],
             ['october' => $october],
             ['php'     => $php],
             ['server'  => $server],
+            ['logins'  => $logins],
+            ['logs'    => $logs],
         );
 
         if (!Settings::get('enable_encryption')) {
