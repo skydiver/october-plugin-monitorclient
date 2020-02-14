@@ -3,7 +3,10 @@
 namespace Martin\MonitorClient\Controllers;
 
 use App, Config, Response;
+use Martin\MonitorClient\Classes\PHP;
+use Martin\MonitorClient\Classes\Server;
 use Martin\MonitorClient\Classes\Updates;
+
 use Martin\MonitorClient\Models\Settings;
 use Illuminate\Encryption\Encrypter;
 
@@ -14,12 +17,18 @@ class Monitor extends \Backend\Classes\Controller {
     public function status($token=null) {
 
         if ($token === '' OR $token !== Settings::get('token')) {
-            App::abort(404, '404 Not Found');
+            App::abort(404);
         }
 
         $updates = Updates::available();
+        $server = Server::info();
+        $php = PHP::info();
 
-        $data = array_merge([], $updates);
+        $data = array_merge([],
+            $updates,
+            ['php' => $php],
+            ['server' => $server],
+        );
 
         if (!Settings::get('enable_encryption')) {
             return Response::json($data);
