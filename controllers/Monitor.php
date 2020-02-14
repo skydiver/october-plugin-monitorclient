@@ -23,6 +23,7 @@ class Monitor extends \Backend\Classes\Controller {
             App::abort(404);
         }
 
+        // get information
         $updates = Updates::available();
         $server  = Server::info();
         $php     = PHP::info();
@@ -30,14 +31,7 @@ class Monitor extends \Backend\Classes\Controller {
         $logins  = Logins::info();
         $logs    = Logs::info();
 
-        $data = array_merge([],
-            ['updates' => $updates],
-            ['october' => $october],
-            ['php'     => $php],
-            ['server'  => $server],
-            ['logins'  => $logins],
-            ['logs'    => $logs],
-        );
+        $data = compact('updates', 'server', 'php', 'october', 'logins', 'logs');
 
         if (!Settings::get('enable_encryption')) {
             return Response::json($data);
