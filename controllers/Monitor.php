@@ -42,8 +42,9 @@ class Monitor extends \Backend\Classes\Controller {
         $key = \Str::replaceFirst('base64:', '', Config::get('app.key'));
         $key = base64_decode($key);
         $newEncrypter = new Encrypter($key, $cipher);
-        $data = $newEncrypter->encrypt($data);
-        return Response::json($data);
+        $data = json_encode($data);
+        $data = $newEncrypter->encrypt($data, false);
+        return Response::make($data);
 
     }
 
